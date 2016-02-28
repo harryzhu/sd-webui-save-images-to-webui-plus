@@ -1,0 +1,33 @@
+{
+  "name": "passwordreset",
+  "version": "1.0.0",
+  "description": "description",
+  "main": "app.js",
+  "repository":"",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Harry",
+    "license": "ISC",
+    "devDependencies": {
+      "gulp": "^3.9.1",
+      "gulp-jslint": "*",
+      "jshint-stylish": "*",
+      "jshint": "*",
+      "gulp-jshint":"*",
+      "gulp-typescript":"*",
+      "gulp-sass":"*",
+      "gulp-concat":"*",
+      "gulp-beautify":"*",
+      "gulp-uglify":"*",
+      "gulp-minify-css":"*",
+      "gulp-imagemin":"*",
+      "imagemin-pngquant":"*",
+      "gulp-imagemin":"*",
+      "gulp-rename":"*",
+      "gulp-sourcemaps":"*",
+      "tslint":"*",
+      "gulp-tslint":"*",
+      "del":"*"
+    }
+  }
