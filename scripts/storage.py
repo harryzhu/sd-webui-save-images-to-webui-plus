@@ -7,7 +7,6 @@ import os
 import re
 import modules.scripts as scripts
 import gradio as gr
-import pymongo
 import gridfs
 import json
 import hashlib
@@ -19,6 +18,18 @@ URL_UPLOAD = "http://u2.webui.plus/upload"
 WEBUI_PLUS_USER = os.environ.get('WEBUI_PLUS_USER', 'harry')
 WEBUI_PLUS_KEY = os.environ.get('WEBUI_PLUS_KEY', '4926eaf23d')
 
+#WEBUI_PLUS_USER = "zhu"
+#WEBUI_PLUS_KEY = "f29ece87f7"
+
+#WEBUI_PLUS_USER = "jeff"
+#WEBUI_PLUS_KEY = "5618816108"
+
+#WEBUI_PLUS_USER = "simon"
+#WEBUI_PLUS_KEY = "2820b4b037"
+
+#WEBUI_PLUS_USER = "michel"
+#WEBUI_PLUS_KEY = "b3b2a258b8"
+
 class Scripts(scripts.Script):
     def title(self):
         return "https://webui.plus"
@@ -28,7 +39,7 @@ class Scripts(scripts.Script):
 
     def ui(self, is_img2img):
         checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus", default=True)
-        checkbox_is_private = gr.inputs.Checkbox(label="Do NOT share", default=False)
+        checkbox_is_private = gr.inputs.Checkbox(label="Do NOT share my images", default=False)
         return [checkbox_save_to_db, checkbox_is_private]
 
     def postprocess(self, p, processed,checkbox_save_to_db,checkbox_is_private):
