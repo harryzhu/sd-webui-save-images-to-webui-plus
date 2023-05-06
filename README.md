@@ -5,7 +5,7 @@
 ```sh
 git clone https://github.com/harryzhu/save-images-to-webui-plus extensions/save-images-to-webui-plus
 ```
-Or download this repository, locate the `extensions` folder within your WebUI installation, create a folder named `save-images-to-webui-plus` and put the contents of the downloaded directory inside of it. 
+   Or download this repository, locate the `extensions` folder within your WebUI installation, create a folder named `save-images-to-webui-plus` and put the contents of the downloaded directory inside of it. 
 
 2. Then restart WebUI.
 
