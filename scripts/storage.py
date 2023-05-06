@@ -15,20 +15,9 @@ import requests
 
 URL_UPLOAD = "http://u2.webui.plus/upload"
 
-WEBUI_PLUS_USER = os.environ.get('WEBUI_PLUS_USER', 'harry')
-WEBUI_PLUS_KEY = os.environ.get('WEBUI_PLUS_KEY', '4926eaf23d')
+WEBUI_PLUS_USER = os.environ.get('WEBUI_PLUS_USER', '__testman__')
+WEBUI_PLUS_KEY = os.environ.get('WEBUI_PLUS_KEY', 'ae02a7ac2b')
 
-#WEBUI_PLUS_USER = "zhu"
-#WEBUI_PLUS_KEY = "f29ece87f7"
-
-#WEBUI_PLUS_USER = "jeff"
-#WEBUI_PLUS_KEY = "5618816108"
-
-#WEBUI_PLUS_USER = "simon"
-#WEBUI_PLUS_KEY = "2820b4b037"
-
-#WEBUI_PLUS_USER = "michel"
-#WEBUI_PLUS_KEY = "b3b2a258b8"
 
 class Scripts(scripts.Script):
     def title(self):
