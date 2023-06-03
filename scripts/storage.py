@@ -2,7 +2,6 @@ import base64
 import datetime
 import time
 from io import BytesIO
-from bson.objectid import ObjectId
 import os
 import re
 import modules.scripts as scripts
