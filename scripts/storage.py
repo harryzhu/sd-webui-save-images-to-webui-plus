@@ -6,7 +6,6 @@ import os
 import re
 import modules.scripts as scripts
 import gradio as gr
-import gridfs
 import json
 import hashlib
 import requests
