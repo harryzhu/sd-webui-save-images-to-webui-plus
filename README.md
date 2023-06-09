@@ -1,4 +1,4 @@
-# Save-Images-To-WebUI.Plus : Stable Diffusion
+# SD-WebUI-Save-Images-To-WebUI-Plus : Stable Diffusion extension
 
 ## Getting Started
 1. Clone this repo into the `extensions` directory via git commandline launched within in the `stable-diffusion-webui` folder
