@@ -3,13 +3,13 @@
 ## Getting Started
 1. Clone this repo into the `extensions` directory via git commandline launched within in the `stable-diffusion-webui` folder
 ```sh
-git clone https://github.com/harryzhu/save-images-to-webui-plus extensions/save-images-to-webui-plus
+git clone https://github.com/harryzhu/sd-webui-save-images-to-webui-plus extensions/sd-webui-save-images-to-webui-plus
 ```
    Or download this repository, locate the `extensions` folder within your WebUI installation, create a folder named `save-images-to-webui-plus` and put the contents of the downloaded directory inside of it. 
 
 2. register an username and get an apikey via http://webui.plus,
 
-3. In your webui machine, setup two env vars: WEBUI_PLUS_USER and WEBUI_PLUS_KEY, WEBUI_PLUS_USER value is your username and WEBUI_PLUS_KEY is your apikey,
+3. In your webui machine, setup two env vars: WEBUI_PLUS_USER and WEBUI_PLUS_KEY, WEBUI_PLUS_USER value is your username and WEBUI_PLUS_KEY is your apikey(not the password),
 
 2. Then restart your WebUI,
 

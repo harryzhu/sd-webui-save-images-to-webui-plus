@@ -25,8 +25,13 @@ class Scripts(scripts.Script):
         return scripts.AlwaysVisible
 
     def ui(self, is_img2img):
-        checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus", default=True)
+        if WEBUI_PLUS_USER == "" or WEBUI_PLUS_KEY == "":
+            checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus, [please set env vars (WEBUI_PLUS_USER, WEBUI_PLUS_KEY) first.]", default=True)
+        else:
+            checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus, Author: " + WEBUI_PLUS_USER.lower(), default=True)
+        
         checkbox_is_private = gr.inputs.Checkbox(label="Do NOT share my images", default=False)
+
         return [checkbox_save_to_db, checkbox_is_private]
 
     def postprocess(self, p, processed,checkbox_save_to_db,checkbox_is_private):
