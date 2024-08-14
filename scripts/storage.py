@@ -18,7 +18,14 @@ URL_UPLOAD = "http://u2.webui.plus/upload"
 WEBUI_PLUS_USER = os.environ.get('WEBUI_PLUS_USER', '')
 WEBUI_PLUS_KEY = os.environ.get('WEBUI_PLUS_KEY', '')
 
+post_list = []
+post_size = 0
+post_count = 0
+post_failed = 0
+
 def err_handler(request, exception):
+    global post_failed
+    post_failed += 1
     print("Request failed.", request.headers)
 
 class Scripts(scripts.Script):
@@ -42,9 +49,15 @@ class Scripts(scripts.Script):
         if not checkbox_save_to_db:
             return True
         
-        post_list = []
+        global post_list
+        global post_size
+        global post_count
+        global post_failed
+
+        post_list.clear()
         post_size = 0
         post_count = 0
+        post_failed = 0
 
         is_private = 0        
         if checkbox_is_private:
@@ -118,15 +131,19 @@ class Scripts(scripts.Script):
             if checkbox_save_to_db:
                 post_list.append(grequests.post(URL_UPLOAD, data=meta))
                 post_size += meta["filesize"]
-                post_count += 1
+                
         
         upload_start = time.time()
-        for res in grequests.imap(post_list, size=10,exception_handler=err_handler):
-            print(res.status_code," - ", res.content.decode('utf-8'))
+        for resp in grequests.imap(post_list, size=5):
+            if resp.status_code < 400:
+                post_count += 1
+            else:
+                post_failed += 1
+            print(resp.status_code," - ", resp.content.decode('utf-8'))
         
         upload_duration = math.ceil(time.time() - upload_start)
         post_size = math.ceil(post_size / 1024)
-        print(f"\033[1;32m*** uploaded: {post_count} files, size: {post_size} KB, duration: {upload_duration} s ***\033[0m")
-        post_list.clear()
+        print(f"\033[1;32m*** uploaded: {post_count}, failed: {post_failed}, size: {post_size} KB, duration: {upload_duration} s ***\033[0m")
+        
 
         return True
