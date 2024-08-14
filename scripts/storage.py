@@ -4,18 +4,22 @@ import time
 from io import BytesIO
 import os
 import re
+import math
 import modules.scripts as scripts
 import gradio as gr
 import json
 import hashlib
+import grequests
 import requests
 
 
 URL_UPLOAD = "http://u2.webui.plus/upload"
 
-WEBUI_PLUS_USER = os.environ.get('WEBUI_PLUS_USER', '__testman__')
-WEBUI_PLUS_KEY = os.environ.get('WEBUI_PLUS_KEY', 'ae02a7ac2b')
+WEBUI_PLUS_USER = os.environ.get('WEBUI_PLUS_USER', '')
+WEBUI_PLUS_KEY = os.environ.get('WEBUI_PLUS_KEY', '')
 
+def err_handler(request, exception):
+    print("Request failed.", request.headers)
 
 class Scripts(scripts.Script):
     def title(self):
@@ -26,9 +30,9 @@ class Scripts(scripts.Script):
 
     def ui(self, is_img2img):
         if WEBUI_PLUS_USER == "" or WEBUI_PLUS_KEY == "":
-            checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus, [please set env vars (WEBUI_PLUS_USER, WEBUI_PLUS_KEY) first.]", default=True)
+            checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus, [please set env vars (WEBUI_PLUS_USER, WEBUI_PLUS_KEY) first].", default=True)
         else:
-            checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus, Author: " + WEBUI_PLUS_USER.lower(), default=True)
+            checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus, Author: " + WEBUI_PLUS_USER, default=True)
         
         checkbox_is_private = gr.inputs.Checkbox(label="Do NOT share my images", default=False)
 
@@ -38,16 +42,16 @@ class Scripts(scripts.Script):
         if not checkbox_save_to_db:
             return True
         
-        is_private = 0
+        post_list = []
+        post_size = 0
+        post_count = 0
+
+        is_private = 0        
         if checkbox_is_private:
             is_private = 1
 
         global WEBUI_PLUS_USER
-        global WEBUI_PLUS_KEY
-
-        WEBUI_PLUS_USER = WEBUI_PLUS_USER.lower()
-        WEBUI_PLUS_KEY = WEBUI_PLUS_KEY.lower()
-        
+        global WEBUI_PLUS_KEY        
              
         for i in range(len(processed.images)):
 
@@ -112,8 +116,17 @@ class Scripts(scripts.Script):
                 continue
 
             if checkbox_save_to_db:
-                print("uploading filesize: %d" % (meta["filesize"],))
-                res = requests.post(url=URL_UPLOAD,data=meta)
-                print(res.status_code)
-                print(res.content)
+                post_list.append(grequests.post(URL_UPLOAD, data=meta))
+                post_size += meta["filesize"]
+                post_count += 1
+        
+        upload_start = time.time()
+        for res in grequests.imap(post_list, size=10,exception_handler=err_handler):
+            print(res.status_code," - ", res.content.decode('utf-8'))
+        
+        upload_duration = math.ceil(time.time() - upload_start)
+        post_size = math.ceil(post_size / 1024)
+        print(f"\033[1;32m*** uploaded: {post_count} files, size: {post_size} KB, duration: {upload_duration} s ***\033[0m")
+        post_list.clear()
+
         return True
