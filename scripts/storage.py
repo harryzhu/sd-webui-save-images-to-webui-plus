@@ -23,11 +23,6 @@ post_size = 0
 post_count = 0
 post_failed = 0
 
-def err_handler(request, exception):
-    global post_failed
-    post_failed += 1
-    print("Request failed.", request.headers)
-
 class Scripts(scripts.Script):
     def title(self):
         return "https://webui.plus"
