@@ -1,5 +1,5 @@
 # SD-WebUI-Save-Images-To-WebUI-Plus : 
-a Stable Diffusion extension
+a Stable Diffusion extension for saving the generated images into cloud automatically.
 
 ## Getting Started
 1. Clone this repo into the `extensions` directory via git commandline launched within in the `stable-diffusion-webui` folder
