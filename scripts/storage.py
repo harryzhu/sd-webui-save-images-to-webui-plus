@@ -4,24 +4,30 @@ import time
 from io import BytesIO
 import os
 import re
-import math
 import modules.scripts as scripts
 import gradio as gr
 import json
 import hashlib
-import grequests
 import requests
 
 
-URL_UPLOAD = "http://u2.webui.plus/upload"
+URL_UPLOAD = "https://u2.webui.plus/upload"
 
 WEBUI_PLUS_USER = os.environ.get('WEBUI_PLUS_USER', '')
 WEBUI_PLUS_KEY = os.environ.get('WEBUI_PLUS_KEY', '')
 
-post_list = []
-post_size = 0
-post_count = 0
-post_failed = 0
+def get_webui_plus_status():
+    status_text = "[ERROR:OFFLINE]"
+    try:
+        res = requests.head(URL_UPLOAD, timeout=3.0)
+        if res.status_code > 0 and res.status_code < 400:
+            status_text = ""
+    except requests.exceptions as e:
+        status_text = "[ERROR:OFFLINE]"
+    finally:
+        return status_text
+
+    
 
 class Scripts(scripts.Script):
     def title(self):
@@ -32,9 +38,9 @@ class Scripts(scripts.Script):
 
     def ui(self, is_img2img):
         if WEBUI_PLUS_USER == "" or WEBUI_PLUS_KEY == "":
-            checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus, [please set env vars (WEBUI_PLUS_USER, WEBUI_PLUS_KEY) first].", default=True)
+            checkbox_save_to_db = gr.inputs.Checkbox(label=get_webui_plus_status() + " Save images to https://webui.plus, [please set env vars (WEBUI_PLUS_USER, WEBUI_PLUS_KEY) first.]", default=True)
         else:
-            checkbox_save_to_db = gr.inputs.Checkbox(label="Save images to https://webui.plus, Author: " + WEBUI_PLUS_USER, default=True)
+            checkbox_save_to_db = gr.inputs.Checkbox(label=get_webui_plus_status() + " Save images to https://webui.plus, Author: " + WEBUI_PLUS_USER.lower(), default=True)
         
         checkbox_is_private = gr.inputs.Checkbox(label="Do NOT share my images", default=False)
 
@@ -44,22 +50,12 @@ class Scripts(scripts.Script):
         if not checkbox_save_to_db:
             return True
         
-        global post_list
-        global post_size
-        global post_count
-        global post_failed
-
-        post_list.clear()
-        post_size = 0
-        post_count = 0
-        post_failed = 0
-
-        is_private = 0        
+        is_private = 0
         if checkbox_is_private:
             is_private = 1
 
         global WEBUI_PLUS_USER
-        global WEBUI_PLUS_KEY        
+        global WEBUI_PLUS_KEY
              
         for i in range(len(processed.images)):
 
@@ -123,22 +119,9 @@ class Scripts(scripts.Script):
                 print("error while preparing the meta")
                 continue
 
-            if checkbox_save_to_db:
-                post_list.append(grequests.post(URL_UPLOAD, data=meta))
-                post_size += meta["filesize"]
-                
-        
-        upload_start = time.time()
-        for resp in grequests.imap(post_list, size=5):
-            if resp.status_code < 400:
-                post_count += 1
-            else:
-                post_failed += 1
-            print(resp.status_code," - ", resp.content.decode('utf-8'))
-        
-        upload_duration = math.ceil(time.time() - upload_start)
-        post_size = math.ceil(post_size / 1024)
-        print(f"\033[1;32m*** uploaded: {post_count}, failed: {post_failed}, size: {post_size} KB, duration: {upload_duration} s ***\033[0m")
-        
+            if checkbox_save_to_db and meta["filesize"] > 0:
+                print("\nuploading filesize: %d" % (meta["filesize"],))
+                res = requests.post(url=URL_UPLOAD,data=meta)
+                print(res.status_code,": ",res.content.decode('utf-8'))
 
         return True
